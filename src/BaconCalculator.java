@@ -34,8 +34,7 @@ public class BaconCalculator {
         String mainChoice = "";
         while (!mainChoice.equals("q"))
         {
-            System.out.print("" +
-                    "--------- Bacon Calculator ---------" +
+            System.out.print("--------- Bacon Calculator ---------" +
                     "\nEnter an actor's name or (q) to quit: ");
             mainChoice = scanner.nextLine();
             if (!mainChoice.equals("q"))
@@ -68,6 +67,7 @@ public class BaconCalculator {
                 int choice = scanner.nextInt();
 
                 System.out.println("\nActor chosen: " + matches.get(choice - 1));
+                scanner.nextLine();
             }
         }
         System.out.println("\n" +
@@ -173,30 +173,6 @@ public class BaconCalculator {
             else if (sortedArray.get(mid).compareTo(compare) == 0)
             {
                 index = mid;
-                low = high + 1;
-            }
-        }
-        return index;
-    }
-
-    private ArrayList<Integer> runBinarySearchContains(ArrayList<String> sortedArray, String compare, int low, int high)
-    {
-        ArrayList<Integer> index = new ArrayList<Integer>();
-
-        while (low <= high)
-        {
-            int mid = low + ((high - low) / 2);
-            if (sortedArray.get(mid).compareTo(compare) < 0)
-            {
-                low = mid + 1;
-            }
-            else if (sortedArray.get(mid).compareTo(compare) > 0)
-            {
-                high = mid - 1;
-            }
-            else if (sortedArray.get(mid).compareTo(compare) == 0)
-            {
-                index.add(mid);
                 low = high + 1;
             }
         }
