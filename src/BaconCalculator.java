@@ -17,14 +17,15 @@ public class BaconCalculator {
 
     public void printKevinBaconCastmates()
     {
-        System.out.print("hi");
         int i = 1;
         for (String str : kevinBaconCastmates)
         {
             System.out.print("" + i + ". ");
             System.out.println(str);
+            i++;
         }
     }
+
     private void oneDegreeOfBacon()
     {
         kevinBaconCastmates = new ArrayList<String>();
@@ -50,27 +51,10 @@ public class BaconCalculator {
 
                     int low = 0;
                     int high = kevinBaconCastmates.size() - 1;
-                    int index = -1;
 
-                    while (low <= high)
-                    {
-                        int mid = low + ((high - low) / 2);
-                        if (kevinBaconCastmates.get(mid).compareTo(currentCastMember) < 0)
-                        {
-                            low = mid + 1;
-                        }
-                        else if (kevinBaconCastmates.get(mid).compareTo(currentCastMember) > 0)
-                        {
-                            high = mid - 1;
-                        }
-                        else if (kevinBaconCastmates.get(mid).compareTo(currentCastMember) == 0)
-                        {
-                            index = mid;
-                            low = high + 1;
-                        }
-                    }
+                    int index = runBinarySearch(kevinBaconCastmates, currentCastMember, low, high);
 
-                    if (index == -1)
+                    if (index == -1 && !currentCastMember.equals("Kevin Bacon"))
                     {
                         inList = false;
                     }
@@ -78,48 +62,10 @@ public class BaconCalculator {
                     {
                         inList = true;
                     }
-                /*
-                int low = 0;
-                int high = kevinBaconCastmates.size() - 1;
-                int target = low + ((high - low) / 2);
-
-                if (kevinBaconCastmates.size() != 0 && kevinBaconCastmates.get(target).equals(currentCastMember))
-                {
-                    inList = true;
-                }
-                if (kevinBaconCastmates.size() != 0)
-                {
-                    while (!kevinBaconCastmates.get(target).equals(currentCastMember) || high != low)
-                    {
-                        int compare = currentCastMember.compareTo(kevinBaconCastmates.get(target));
-                        if (compare < 0)
-                        {
-                            high = target - 1;
-                        }
-                        if (compare > 0)
-                        {
-                            low = target + 1;
-                        }
-                        target = low + ((high - low) / 2);
-                    }
-                }
-
-                 */
-                /*
-                for (int k = 0; k < kevinBaconCastmates.size(); k++)
-                {
-                    if (currentCastMember.equals(kevinBaconCastmates.get(k)))
-                    {
-                        inList = true;
-                        k = kevinBaconCastmates.size();
-                    }
-                }
-
-                 */
                     if (!inList)
                     {
                         kevinBaconCastmates.add(currentCastMember);
-                        //sortStringResults(kevinBaconCastmates);
+                        sortStringResults(kevinBaconCastmates);
                     }
                 }
             }
@@ -139,5 +85,29 @@ public class BaconCalculator {
             }
             listToSort.set(possibleIndex, temp);
         }
+    }
+
+    private int runBinarySearch(ArrayList<String> sortedArray, String compare, int low, int high)
+    {
+        int index = -1;
+
+        while (low <= high)
+        {
+            int mid = low + ((high - low) / 2);
+            if (sortedArray.get(mid).compareTo(compare) < 0)
+            {
+                low = mid + 1;
+            }
+            else if (sortedArray.get(mid).compareTo(compare) > 0)
+            {
+                high = mid - 1;
+            }
+            else if (sortedArray.get(mid).compareTo(compare) == 0)
+            {
+                index = mid;
+                low = high + 1;
+            }
+        }
+        return index;
     }
 }
