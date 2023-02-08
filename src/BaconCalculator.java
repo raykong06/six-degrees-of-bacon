@@ -55,6 +55,11 @@ public class BaconCalculator {
         sortStringResults(matches);
         printListWithNumbers(matches);
 
+        System.out.println("\nWhich actor do you want to pick?");
+        System.out.print("Enter a number: ");
+        int choice = scanner.nextInt();
+
+        System.out.println("\nActor chosen: " + matches.get(choice - 1));
     }
 
     private void setAllActors()
