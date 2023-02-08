@@ -31,35 +31,48 @@ public class BaconCalculator {
 
     public void calculateBacon()
     {
-        System.out.print("Enter an actor's name or (q) to quit: ");
-        inputActor = scanner.nextLine();
-        ArrayList<String> matches = new ArrayList<String>();
-        for (int i = 0; i < allActors.size(); i++)
+        String mainChoice = "";
+        while (!mainChoice.equals("q"))
         {
-            String addActor = allActors.get(i);
-            boolean inList = false;
-            for (int j = 0; j < matches.size(); j++)
+            System.out.print("" +
+                    "--------- Bacon Calculator ---------" +
+                    "\nEnter an actor's name or (q) to quit: ");
+            mainChoice = scanner.nextLine();
+            if (!mainChoice.equals("q"))
             {
-                if (matches.get(j).equals(addActor))
+                inputActor = mainChoice;
+                ArrayList<String> matches = new ArrayList<String>();
+                for (int i = 0; i < allActors.size(); i++)
                 {
-                    inList = true;
-                    j = matches.size();
+                    String addActor = allActors.get(i);
+                    boolean inList = false;
+                    for (int j = 0; j < matches.size(); j++)
+                    {
+                        if (matches.get(j).equals(addActor))
+                        {
+                            inList = true;
+                            j = matches.size();
+                        }
+                    }
+                    if (addActor.indexOf(inputActor) > -1 && !inList)
+                    {
+                        matches.add(addActor);
+                    }
                 }
-            }
-            if (addActor.indexOf(inputActor) > -1 && !inList)
-            {
-                matches.add(addActor);
+
+                sortStringResults(matches);
+                printListWithNumbers(matches);
+
+                System.out.println("\nWhich actor do you want to pick?");
+                System.out.print("Enter a number: ");
+                int choice = scanner.nextInt();
+
+                System.out.println("\nActor chosen: " + matches.get(choice - 1));
             }
         }
-
-        sortStringResults(matches);
-        printListWithNumbers(matches);
-
-        System.out.println("\nWhich actor do you want to pick?");
-        System.out.print("Enter a number: ");
-        int choice = scanner.nextInt();
-
-        System.out.println("\nActor chosen: " + matches.get(choice - 1));
+        System.out.println("\n" +
+                "-----------------------------------------" +
+                "\nThank you for using the Bacon Calculator!");
     }
 
     private void setAllActors()
