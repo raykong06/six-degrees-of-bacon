@@ -11,7 +11,7 @@ public class Main {
         System.out.println("Number of movies: " + movies.size());
 
          */
-        BaconCalculator bc = new BaconCalculator("Jim Cummings");
-        bc.printKevinBaconCastmates();
+        BaconCalculator bc = new BaconCalculator();
+        bc.calculateBacon();
     }
 }
