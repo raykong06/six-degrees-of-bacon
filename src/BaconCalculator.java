@@ -5,10 +5,11 @@ import java.util.ArrayList;
 
 public class BaconCalculator {
 
-    Scanner scanner = new Scanner(System.in);
-    ArrayList<SimpleMovie> movies = MovieDatabaseBuilder.getMovieDB("src/movie_data");
+    private Scanner scanner = new Scanner(System.in);
+    private ArrayList<SimpleMovie> movies = MovieDatabaseBuilder.getMovieDB("src/movie_data");
     private String inputActor;
     private int degree;
+    private ArrayList<String> connectedMovies;
     private ArrayList<String> allActors;
     private ArrayList<String> kevinBaconCastmates;
 
@@ -29,7 +30,7 @@ public class BaconCalculator {
         }
     }
 
-    public void calculateBacon()
+    public void mainMenu()
     {
         String mainChoice = "";
         while (!mainChoice.equals("q"))
@@ -67,12 +68,36 @@ public class BaconCalculator {
                 int choice = scanner.nextInt();
 
                 System.out.println("\nActor chosen: " + matches.get(choice - 1));
+
+                calculateBacon();
+
+                System.out.print(inputActor);
+                if (connectedMovies.size() > 0)
+                {
+                    System.out.print(" -> ");
+                }
+                for (int i = 0; i < connectedMovies.size(); i++)
+                {
+
+                }
                 scanner.nextLine();
             }
         }
         System.out.println("\n" +
                 "-----------------------------------------" +
                 "\nThank you for using the Bacon Calculator!");
+    }
+
+    private void calculateBacon()
+    {
+        if (inputActor.equals("Kevin Bacon"))
+        {
+            degree = 0;
+        }
+        else if (runBinarySearch(kevinBaconCastmates, inputActor, 0, kevinBaconCastmates.size() - 1) > -1)
+        {
+            degree = 1;
+        }
     }
 
     private void setAllActors()

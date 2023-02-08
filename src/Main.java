@@ -12,6 +12,6 @@ public class Main {
 
          */
         BaconCalculator bc = new BaconCalculator();
-        bc.calculateBacon();
+        bc.mainMenu();
     }
 }
