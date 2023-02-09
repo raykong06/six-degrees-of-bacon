@@ -9,7 +9,16 @@ public class SimpleMovie implements Comparable<SimpleMovie>{
         title = t;
         actorsData = a;
         actors = new ArrayList<String>();
-        String[] tempActors = actorsData.split(":");
+        String[] tempActors;
+        if (actorsData.indexOf(":") > -1)
+        {
+            tempActors = actorsData.split(":");
+        }
+        else
+        {
+            tempActors = actorsData.split(", ");
+        }
+
         for (int i = 0; i < tempActors.length; i++) {
             actors.add(tempActors[i]);
         }

@@ -7,7 +7,7 @@ public class BaconCalculator {
 
     private Scanner scanner = new Scanner(System.in);
     private ArrayList<SimpleMovie> movies = MovieDatabaseBuilder.getMovieDB("src/movie_data");
-    private ArrayList<SimpleMovie> moviesSortedLargeCast = MovieDatabaseBuilder.getMovieDB("src/output.txt");
+    private ArrayList<SimpleMovie> moviesSortedLargeCast = MovieDatabaseBuilder.getSimpleMovieDB("src/output.txt");
     private String inputActor;
     private int degree;
     private ArrayList<String> connectedActors;
@@ -18,11 +18,9 @@ public class BaconCalculator {
 
     public BaconCalculator()
     {
-        /*
         oneDegreeOfBacon();
         setAllActors();
-        sortMoviesByCast();
-        */
+        //sortMoviesByCast();
     }
 
     public void printListWithNumbers(ArrayList<String> list)
@@ -103,7 +101,7 @@ public class BaconCalculator {
 
     public void test()
     {
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < movies.size(); i++)
         {
             System.out.println(moviesSortedLargeCast.get(i).getActors().size());
         }
@@ -218,6 +216,7 @@ public class BaconCalculator {
     }
      */
 
+    /*
     private void sortMoviesByCast()
     {
         moviesSortedLargeCast = new ArrayList<SimpleMovie>();
@@ -243,6 +242,8 @@ public class BaconCalculator {
 
         return moviesSortedLargeCast;
     }
+
+     */
 
     private void sortStringResults(ArrayList<String> listToSort)
     {
