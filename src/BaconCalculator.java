@@ -125,6 +125,7 @@ public class BaconCalculator {
             }
             else
             {
+                degree = 2;
 
             }
         }
@@ -209,12 +210,57 @@ public class BaconCalculator {
         }
     }
 
-    /*
-    private ArrayList<String>[] extraDegreeOfBacon(ArrayList<String> listToSearch)
+    private void extraDegreeOfBacon(ArrayList<String> listToSearch)
     {
-        ArrayList<>
+        ArrayList<String> finalActorConnect = new ArrayList<String>();
+        ArrayList<String> finalMovieConnect = new ArrayList<String>();
+
+        boolean foundKevinBacon = false;
+        /*
+        while (!foundKevinBacon)
+        {
+            SimpleMovie currentMovie = moviesSortedLargeCast.get(i);
+            for (int j = 0; j < currentMovie.getActors().size(); j++)
+            {
+                String currentActor = currentMovie.getActors().get(j);
+                if (currentActor.equals(inputActor))
+                {
+                    actorConnect.add(actorConnect)
+                }
+            }
+        }
+
+         */
+
+        for (int i = 0; i < moviesSortedLargeCast.size(); i++)
+        {
+            ArrayList<String> actorConnect = new ArrayList<String>();
+            ArrayList<String> movieConnect = new ArrayList<String>();
+            SimpleMovie currentMovie = moviesSortedLargeCast.get(i);
+            boolean foundMovie = false;
+            for (int j = 0; j < currentMovie.getActors().size(); j++)
+            {
+                String currentActor = currentMovie.getActors().get(j);
+                if (currentActor.equals(inputActor))
+                {
+
+                    j = currentMovie.getActors().size();
+                    foundMovie = true;
+                }
+            }
+            movieConnect.add(currentMovie.getTitle());
+            if (foundMovie)
+            {
+                for (int j = 0; j < currentMovie.getActors().size(); j++)
+                {
+                    for (int k = 0; k < moviesSortedLargeCast.size(); k++)
+                    {
+
+                    }
+                }
+            }
+        }
     }
-     */
 
     /*
     private void sortMoviesByCast()
