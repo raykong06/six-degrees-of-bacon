@@ -262,6 +262,29 @@ public class BaconCalculator {
         }
     }
 
+    private void findConnectingActor(SimpleMovie movie)
+    {
+        boolean foundBacon = false;
+        int currentDegree = 0;
+
+        while (!foundBacon && currentDegree <= 5)
+        {
+            for (int i = 0; i < movie.getActors().size(); i++)
+            {
+                String currentActor = movie.getActors().get(i);
+                for (int j = 0; j < moviesSortedLargeCast.size(); j++)
+                {
+                    SimpleMovie currentMovie = moviesSortedLargeCast.get(j);
+                    for (int k = 0; k < currentMovie.getActors().size(); k++)
+                    {
+                        String actor = currentMovie.getActors().get(k);
+                        if (actor.equals("Kevin Bacon"))
+                    }
+                }
+            }
+        }
+    }
+
     /*
     private void sortMoviesByCast()
     {
