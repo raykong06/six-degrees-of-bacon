@@ -7,16 +7,22 @@ public class BaconCalculator {
 
     private Scanner scanner = new Scanner(System.in);
     private ArrayList<SimpleMovie> movies = MovieDatabaseBuilder.getMovieDB("src/movie_data");
+    private ArrayList<SimpleMovie> moviesSortedLargeCast = MovieDatabaseBuilder.getMovieDB("src/output.txt");
     private String inputActor;
     private int degree;
+    private ArrayList<String> connectedActors;
     private ArrayList<String> connectedMovies;
     private ArrayList<String> allActors;
     private ArrayList<String> kevinBaconCastmates;
+    private ArrayList<String> correspondingKevinBaconCastmates;
 
     public BaconCalculator()
     {
+        /*
         oneDegreeOfBacon();
         setAllActors();
+        sortMoviesByCast();
+        */
     }
 
     public void printListWithNumbers(ArrayList<String> list)
@@ -67,20 +73,27 @@ public class BaconCalculator {
                 System.out.print("Enter a number: ");
                 int choice = scanner.nextInt();
 
+                inputActor = matches.get(choice - 1);
                 System.out.println("\nActor chosen: " + matches.get(choice - 1));
 
                 calculateBacon();
 
-                System.out.print(inputActor);
-                if (connectedMovies.size() > 0)
-                {
-                    System.out.print(" -> ");
-                }
+                System.out.print(inputActor + " -> ");
                 for (int i = 0; i < connectedMovies.size(); i++)
                 {
-
+                    System.out.print(connectedMovies.get(i));
+                    System.out.print(" -> ");
+                    if (i < connectedActors.size())
+                    {
+                        System.out.print(connectedActors.get(i));
+                        System.out.print(" -> ");
+                    }
                 }
+                System.out.println("Kevin Bacon");
+                System.out.println("Bacon Number of: " + degree);
+
                 scanner.nextLine();
+                System.out.println();
             }
         }
         System.out.println("\n" +
@@ -88,15 +101,34 @@ public class BaconCalculator {
                 "\nThank you for using the Bacon Calculator!");
     }
 
+    public void test()
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            System.out.println(moviesSortedLargeCast.get(i).getActors().size());
+        }
+    }
+
     private void calculateBacon()
     {
+        connectedMovies = new ArrayList<String>();
+        connectedActors = new ArrayList<String>();
         if (inputActor.equals("Kevin Bacon"))
         {
             degree = 0;
         }
-        else if (runBinarySearch(kevinBaconCastmates, inputActor, 0, kevinBaconCastmates.size() - 1) > -1)
+        else
         {
-            degree = 1;
+            int actorIndex = runBinarySearch(kevinBaconCastmates, inputActor, 0, kevinBaconCastmates.size() - 1);
+            if (actorIndex > -1)
+            {
+                degree = 1;
+                connectedMovies.add(0, correspondingKevinBaconCastmates.get(actorIndex));
+            }
+            else
+            {
+
+            }
         }
     }
 
@@ -132,6 +164,7 @@ public class BaconCalculator {
     private void oneDegreeOfBacon()
     {
         kevinBaconCastmates = new ArrayList<String>();
+        correspondingKevinBaconCastmates = new ArrayList<String>();
         for (int i = 0; i < movies.size(); i++)
         {
             SimpleMovie currentMovie = movies.get(i);
@@ -169,10 +202,46 @@ public class BaconCalculator {
                     {
                         kevinBaconCastmates.add(currentCastMember);
                         sortStringResults(kevinBaconCastmates);
+
+                        int addMovieIndex = runBinarySearch(kevinBaconCastmates, currentCastMember, 0, kevinBaconCastmates.size());
+                        correspondingKevinBaconCastmates.add(addMovieIndex, currentMovie.getTitle());
                     }
                 }
             }
         }
+    }
+
+    /*
+    private ArrayList<String>[] extraDegreeOfBacon(ArrayList<String> listToSearch)
+    {
+        ArrayList<>
+    }
+     */
+
+    private void sortMoviesByCast()
+    {
+        moviesSortedLargeCast = new ArrayList<SimpleMovie>();
+
+        for (int i = 0; i < movies.size(); i++)
+        {
+            SimpleMovie currentMovie = movies.get(i);
+            moviesSortedLargeCast.add(currentMovie);
+            Collections.sort(moviesSortedLargeCast, Collections.reverseOrder());
+        }
+    }
+
+    public ArrayList<SimpleMovie> makeFile()
+    {
+        moviesSortedLargeCast = new ArrayList<SimpleMovie>();
+
+        for (int i = 0; i < movies.size(); i++)
+        {
+            SimpleMovie currentMovie = movies.get(i);
+            moviesSortedLargeCast.add(currentMovie);
+            Collections.sort(moviesSortedLargeCast, Collections.reverseOrder());
+        }
+
+        return moviesSortedLargeCast;
     }
 
     private void sortStringResults(ArrayList<String> listToSort)

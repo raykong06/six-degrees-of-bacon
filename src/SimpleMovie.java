@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class SimpleMovie {
+public class SimpleMovie implements Comparable<SimpleMovie>{
     private String title;
     private String actorsData;
     private ArrayList<String> actors;
@@ -20,8 +20,17 @@ public class SimpleMovie {
     {
         return actors;
     }
+    public String getTitle()
+    {
+        return title;
+    }
 
     public String toString() {
         return "Title: " + title + "\n" + "Actors: " + actors + "\n";
+    }
+
+    @Override
+    public int compareTo(SimpleMovie movie) {
+        return actors.size() - movie.getActors().size();
     }
 }
