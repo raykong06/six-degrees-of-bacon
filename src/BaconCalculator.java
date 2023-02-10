@@ -124,7 +124,21 @@ public class BaconCalculator {
             }
             else
             {
-                extraDegreeOfBacon();
+                degree = 2;
+                boolean foundBacon = false;
+                for (int i = 0; i < kevinBaconCastmates.size(); i++)
+                {
+                    String currentActor = kevinBaconCastmates.get(i);
+                    for (int j = 0; j < moviesSortedLargeCast.size(); j++)
+                    {
+                        SimpleMovie currentMovie= moviesSortedLargeCast.get(j);
+                        ArrayList<String> currentMovieCast = moviesSortedLargeCast.get(j).getActors();
+                        if (currentMovieCast.contains(currentActor))
+                        {
+
+                        }
+                    }
+                }
             }
         }
     }
