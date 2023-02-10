@@ -20,7 +20,6 @@ public class BaconCalculator {
     {
         oneDegreeOfBacon();
         setAllActors();
-        //sortMoviesByCast();
     }
 
     public void printListWithNumbers(ArrayList<String> list)
@@ -125,8 +124,7 @@ public class BaconCalculator {
             }
             else
             {
-                degree = 2;
-
+                extraDegreeOfBacon();
             }
         }
     }
@@ -210,10 +208,11 @@ public class BaconCalculator {
         }
     }
 
-    private void extraDegreeOfBacon(ArrayList<String> listToSearch)
+    private void extraDegreeOfBacon()
     {
         ArrayList<String> finalActorConnect = new ArrayList<String>();
         ArrayList<String> finalMovieConnect = new ArrayList<String>();
+        ArrayList<SimpleMovie> moviesWithActor = new ArrayList<SimpleMovie>();
 
         boolean foundKevinBacon = false;
         /*
@@ -232,6 +231,33 @@ public class BaconCalculator {
 
          */
 
+        for (int i = 0; i < movies.size(); i++)
+        {
+            SimpleMovie currentMovie = movies.get(i);
+            for (int j = 0; j < currentMovie.getActors().size(); j++)
+            {
+                if (currentMovie.getActors().get(j).equals(inputActor))
+                {
+                    moviesWithActor.add(currentMovie);
+                    j = currentMovie.getActors().size();
+                }
+            }
+        }
+
+        for (int i = 0; i < moviesWithActor.size(); i++)
+        {
+            SimpleMovie currentMovie = movies.get(i);
+            findConnectingActor(currentMovie, finalMovieConnect, finalActorConnect, 0, foundKevinBacon);
+        }
+        for (String str : finalActorConnect)
+        {
+            connectedActors.add(str);
+        }
+        for (String str : finalMovieConnect)
+        {
+            connectedMovies.add(str);
+        }
+/*
         for (int i = 0; i < moviesSortedLargeCast.size(); i++)
         {
             ArrayList<String> actorConnect = new ArrayList<String>();
@@ -260,32 +286,48 @@ public class BaconCalculator {
                 }
             }
         }
+ */
     }
 
-    private void findConnectingActor(SimpleMovie movie, ArrayList<String> movieConnect, ArrayList<String> actorConnect)
+    private void findConnectingActor(SimpleMovie movie, ArrayList<String> movieConnect, ArrayList<String> actorConnect, int currentDegree, boolean foundBacon)
     {
-        boolean foundBacon = false;
-        int currentDegree = 0;
-
-        while (!foundBacon && currentDegree <= 5)
+        if (currentDegree >= 3 && !foundBacon)
+        {
+            currentDegree = 0;
+            movieConnect.clear();
+            actorConnect.clear();
+        }
+        while (!foundBacon && currentDegree <= 2)
         {
             for (int i = 0; i < movie.getActors().size(); i++)
             {
                 String currentActor = movie.getActors().get(i);
-                actorConnect.add(currentActor);
-                for (int j = 0; j < moviesSortedLargeCast.size(); j++)
+
+                if (currentActor.equals("Kevin Bacon"))
                 {
-                    SimpleMovie currentMovie = moviesSortedLargeCast.get(j);
-                    movieConnect.add(currentMovie.getTitle());
-                    for (int k = 0; k < currentMovie.getActors().size(); k++)
+                    foundBacon = true;
+                    i = movie.getActors().size();
+                }
+                else
+                {
+                    actorConnect.add(currentActor);
+                    movieConnect.add(movie.getTitle());
+                    currentDegree++;
+
+                    ArrayList<SimpleMovie> moviesWithActor = new ArrayList<SimpleMovie>();
+                    for (int j = 0; j < movies.size(); j++)
                     {
-                        String actor = currentMovie.getActors().get(k);
-                        if (actor.equals("Kevin Bacon"))
-                        {
-                            foundBacon = true;
-                            k = currentMovie.getActors().size();
-                            j = moviesSortedLargeCast.size();
-                        }
+                        SimpleMovie currentMovie = movies.get(j);
+                        for (int k = 0; k < currentMovie.getActors().size(); k++)
+                            if (currentMovie.getActors().get(k).equals(currentActor))
+                            {
+                                moviesWithActor.add(currentMovie);
+                                k = currentMovie.getActors().size();
+                            }
+                    }
+                    for (int j = 0; j < moviesSortedLargeCast.size(); j++)
+                    {
+                        findConnectingActor(moviesSortedLargeCast.get(j), movieConnect, actorConnect, currentDegree, foundBacon);
                     }
                 }
             }
