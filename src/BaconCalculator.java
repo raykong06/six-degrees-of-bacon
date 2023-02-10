@@ -262,7 +262,7 @@ public class BaconCalculator {
         }
     }
 
-    private void findConnectingActor(SimpleMovie movie)
+    private void findConnectingActor(SimpleMovie movie, ArrayList<String> movieConnect, ArrayList<String> actorConnect)
     {
         boolean foundBacon = false;
         int currentDegree = 0;
@@ -272,13 +272,20 @@ public class BaconCalculator {
             for (int i = 0; i < movie.getActors().size(); i++)
             {
                 String currentActor = movie.getActors().get(i);
+                actorConnect.add(currentActor);
                 for (int j = 0; j < moviesSortedLargeCast.size(); j++)
                 {
                     SimpleMovie currentMovie = moviesSortedLargeCast.get(j);
+                    movieConnect.add(currentMovie.getTitle());
                     for (int k = 0; k < currentMovie.getActors().size(); k++)
                     {
                         String actor = currentMovie.getActors().get(k);
                         if (actor.equals("Kevin Bacon"))
+                        {
+                            foundBacon = true;
+                            k = currentMovie.getActors().size();
+                            j = moviesSortedLargeCast.size();
+                        }
                     }
                 }
             }
