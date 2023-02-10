@@ -110,9 +110,11 @@ public class BaconCalculator {
     {
         connectedMovies = new ArrayList<String>();
         connectedActors = new ArrayList<String>();
+        boolean foundActor = false;
         if (inputActor.equals("Kevin Bacon"))
         {
             degree = 0;
+            foundActor = true;
         }
         else
         {
@@ -120,26 +122,48 @@ public class BaconCalculator {
             if (actorIndex > -1)
             {
                 degree = 1;
-                connectedMovies.add(0, correspondingKevinBaconCastmates.get(actorIndex));
+                connectedMovies.add(correspondingKevinBaconCastmates.get(actorIndex));
+                foundActor = true;
             }
             else
             {
-                degree = 2;
-                boolean foundBacon = false;
                 for (int i = 0; i < kevinBaconCastmates.size(); i++)
                 {
                     String currentActor = kevinBaconCastmates.get(i);
+                    ArrayList<SimpleMovie> moviesWithActor = new ArrayList<SimpleMovie>();
                     for (int j = 0; j < moviesSortedLargeCast.size(); j++)
                     {
-                        SimpleMovie currentMovie= moviesSortedLargeCast.get(j);
+                        SimpleMovie currentMovie = moviesSortedLargeCast.get(j);
                         ArrayList<String> currentMovieCast = moviesSortedLargeCast.get(j).getActors();
                         if (currentMovieCast.contains(currentActor))
                         {
+                            moviesWithActor.add(currentMovie);
+                        }
+                    }
+                    for (int j = 0; j < moviesWithActor.size(); j++)
+                    {
+                        SimpleMovie currentMovie = moviesWithActor.get(j);
+                        ArrayList<String> currentMovieCast = currentMovie.getActors();
+                        if (currentMovieCast.contains(inputActor))
+                        {
+                            connectedActors.add(currentActor);
+                            connectedMovies.add(currentMovie.getTitle());
+                            degree = 2;
+                            foundActor = true;
+                            j = moviesWithActor.size();
+                            i = kevinBaconCastmates.size();
 
+                            int degreeTwoIndex = runBinarySearch(kevinBaconCastmates, currentActor, 0, kevinBaconCastmates.size() - 1);
+                            connectedMovies.add(correspondingKevinBaconCastmates.get(degreeTwoIndex));
                         }
                     }
                 }
             }
+        }
+
+        if (!foundActor)
+        {
+            degree = -1;
         }
     }
 
