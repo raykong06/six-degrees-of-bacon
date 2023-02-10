@@ -66,30 +66,44 @@ public class BaconCalculator {
                 sortStringResults(matches);
                 printListWithNumbers(matches);
 
-                System.out.println("\nWhich actor do you want to pick?");
-                System.out.print("Enter a number: ");
-                int choice = scanner.nextInt();
-
-                inputActor = matches.get(choice - 1);
-                System.out.println("\nActor chosen: " + matches.get(choice - 1));
-
-                calculateBacon();
-
-                System.out.print(inputActor + " -> ");
-                for (int i = 0; i < connectedMovies.size(); i++)
+                if (matches.size() < 1)
                 {
-                    System.out.print(connectedMovies.get(i));
-                    System.out.print(" -> ");
-                    if (i < connectedActors.size())
-                    {
-                        System.out.print(connectedActors.get(i));
-                        System.out.print(" -> ");
-                    }
+                    System.out.println("Your search for an actor had no matches within the database.");
                 }
-                System.out.println("Kevin Bacon");
-                System.out.println("Bacon Number of: " + degree);
+                else
+                {
+                    System.out.println("\nWhich actor do you want to pick?");
+                    System.out.print("Enter a number: ");
+                    int choice = scanner.nextInt();
 
-                scanner.nextLine();
+                    inputActor = matches.get(choice - 1);
+                    System.out.println("\nActor chosen: " + matches.get(choice - 1));
+
+                    calculateBacon();
+
+                    if (degree < 0)
+                    {
+                        System.out.println("The actor could not be found in under 3 degrees.");
+                    }
+                    else
+                    {
+                        System.out.print(inputActor + " -> ");
+                        for (int i = 0; i < connectedMovies.size(); i++)
+                        {
+                            System.out.print(connectedMovies.get(i));
+                            System.out.print(" -> ");
+                            if (i < connectedActors.size())
+                            {
+                                System.out.print(connectedActors.get(i));
+                                System.out.print(" -> ");
+                            }
+                        }
+                        System.out.println("Kevin Bacon");
+                        System.out.println("Bacon Number of: " + degree);
+                    }
+                    scanner.nextLine();
+                }
+
                 System.out.println();
             }
         }
@@ -246,6 +260,7 @@ public class BaconCalculator {
         }
     }
 
+    /*
     private void extraDegreeOfBacon()
     {
         ArrayList<String> finalActorConnect = new ArrayList<String>();
@@ -253,7 +268,6 @@ public class BaconCalculator {
         ArrayList<SimpleMovie> moviesWithActor = new ArrayList<SimpleMovie>();
 
         boolean foundKevinBacon = false;
-        /*
         while (!foundKevinBacon)
         {
             SimpleMovie currentMovie = moviesSortedLargeCast.get(i);
@@ -266,8 +280,6 @@ public class BaconCalculator {
                 }
             }
         }
-
-         */
 
         for (int i = 0; i < movies.size(); i++)
         {
@@ -295,7 +307,7 @@ public class BaconCalculator {
         {
             connectedMovies.add(str);
         }
-/*
+
         for (int i = 0; i < moviesSortedLargeCast.size(); i++)
         {
             ArrayList<String> actorConnect = new ArrayList<String>();
@@ -324,7 +336,6 @@ public class BaconCalculator {
                 }
             }
         }
- */
     }
 
     private void findConnectingActor(SimpleMovie movie, ArrayList<String> movieConnect, ArrayList<String> actorConnect, int currentDegree, boolean foundBacon)
@@ -372,6 +383,7 @@ public class BaconCalculator {
         }
     }
 
+     */
     /*
     private void sortMoviesByCast()
     {
