@@ -124,7 +124,11 @@ public class BaconCalculator {
     {
         connectedMovies = new ArrayList<String>();
         connectedActors = new ArrayList<String>();
+        ArrayList<String> nextDegreeActorList = new ArrayList<String>();
+        ArrayList<SimpleMovie> nextDegreeMovieList = new ArrayList<SimpleMovie>();
+        ArrayList<String> correspondingActorPrevDegree = new ArrayList<String>();
         boolean foundActor = false;
+
         if (inputActor.equals("Kevin Bacon")) // degree 0
         {
             degree = 0;
@@ -132,7 +136,7 @@ public class BaconCalculator {
         }
         if (!foundActor) // degree 1
         {
-            int actorIndex = runBinarySearch(kevinBaconCastmates, inputActor, 0, kevinBaconCastmates.size() - 1);
+            int actorIndex = runBinarySearch(kevinBaconCastmates, inputActor);
             if (actorIndex > -1)
             {
                 degree = 1;
@@ -155,20 +159,106 @@ public class BaconCalculator {
                 for (int j = 0; j < moviesWithActor.size(); j++) {
                     SimpleMovie currentMovie = moviesWithActor.get(j);
                     ArrayList<String> currentMovieCast = currentMovie.getActors();
-                    if (currentMovieCast.contains(inputActor)) {
-                        connectedActors.add(currentActor);
-                        connectedMovies.add(currentMovie.getTitle());
-                        degree = 2;
-                        foundActor = true;
-                        j = moviesWithActor.size();
-                        i = kevinBaconCastmates.size();
+                    for (int k = 0; k < currentMovieCast.size(); k++)
+                    {
+                        String currentMovieCurrentActor = currentMovieCast.get(k);
 
-                        int degreeTwoIndex = runBinarySearch(kevinBaconCastmates, currentActor, 0, kevinBaconCastmates.size() - 1);
-                        connectedMovies.add(correspondingKevinBaconCastmates.get(degreeTwoIndex));
+                        // found actor
+                        if (currentMovieCurrentActor.equals(inputActor)) {
+                            degree = 2;
+                            foundActor = true;
+                            j = moviesWithActor.size();
+                            i = kevinBaconCastmates.size();
+
+                            connectedActors.add(currentActor);
+                            connectedMovies.add(currentMovie.getTitle());
+
+                            int degreeTwoIndex = runBinarySearch(kevinBaconCastmates, currentActor);
+                            connectedMovies.add(correspondingKevinBaconCastmates.get(degreeTwoIndex));
+                        }
+                        else
+                        {
+                            int checkIndex = runBinarySearch(nextDegreeActorList, currentMovieCurrentActor);
+                            if (checkIndex < 0)
+                            {
+                                nextDegreeActorList.add(currentMovieCurrentActor);
+                                Collections.sort(nextDegreeActorList);
+                                int sortIndex = runBinarySearch(nextDegreeActorList, currentMovieCurrentActor);
+                                nextDegreeMovieList.add(sortIndex, currentMovie);
+                                correspondingActorPrevDegree.add(sortIndex, currentActor);
+                            }
+                        }
                     }
                 }
             }
         }
+
+
+        if (!foundActor) // degree 3
+        {
+            for (int i = 0; i < nextDegreeActorList.size(); i++)
+            {
+                String currentActor = nextDegreeActorList.get(i);
+                SimpleMovie correspondingMovie = nextDegreeMovieList.get(i);
+                ArrayList<SimpleMovie> moviesWithActor = new ArrayList<SimpleMovie>();
+                for (int j = 0; j < moviesSortedLargeCast.size(); j++) {
+                    SimpleMovie currentMovie = moviesSortedLargeCast.get(j);
+                    ArrayList<String> currentMovieCast = moviesSortedLargeCast.get(j).getActors();
+                    if (currentMovieCast.contains(currentActor)) {
+                        moviesWithActor.add(currentMovie);
+                    }
+                }
+
+
+                for (int j = 0; j < moviesWithActor.size(); j++) {
+                    SimpleMovie currentMovie = moviesWithActor.get(j);
+                    ArrayList<String> currentMovieCast = currentMovie.getActors();
+                    // found actor
+                    if (currentMovieCast.contains(inputActor)) {
+                        degree = 3;
+                        foundActor = true;
+
+                        String addActor = correspondingActorPrevDegree.get(i);
+                        for (int k = 0; k < nextDegreeMovieList.size(); k++)
+                        {
+                            if (correspondingKevinBaconCastmates.contains(nextDegreeMovieList.get(k).getTitle()) && nextDegreeMovieList.get(k).getActors().contains(addActor))
+                            {
+                                String addMovie = correspondingKevinBaconCastmates.get(correspondingKevinBaconCastmates.indexOf(nextDegreeMovieList.get(k).getTitle()));
+                                connectedMovies.add(addMovie);
+                                k = nextDegreeMovieList.size();
+                            }
+                        }
+
+                        connectedMovies.add(nextDegreeMovieList.get(i).getTitle());
+                        connectedActors.add(addActor);
+
+                        connectedMovies.add(currentMovie.getTitle());
+                        connectedActors.add(currentActor);
+
+                        int degreeThreeIndex = runBinarySearch(nextDegreeActorList, currentActor);
+                        connectedMovies.add(nextDegreeMovieList.get(degreeThreeIndex).getTitle());
+
+                        j = moviesWithActor.size();
+                        i = nextDegreeActorList.size();
+                    }
+                    else
+                    {
+                        /*
+                        int checkIndex = runBinarySearch(nextDegreeActorList, currentActor);
+                        if (checkIndex < 0)
+                        {
+                            nextDegreeActorList.add(currentActor);
+                            Collections.sort(nextDegreeActorList);
+                            int sortIndex = runBinarySearch(nextDegreeActorList, currentActor);
+                            nextDegreeMovieList.add(sortIndex, currentMovie);
+                        }
+
+                         */
+                    }
+                }
+            }
+        }
+
         if (!foundActor)
         {
             degree = -1;
@@ -190,7 +280,7 @@ public class BaconCalculator {
                 int low = 0;
                 int high = allActors.size() - 1;
 
-                int index = runBinarySearch(allActors, currentCastMember, low, high);
+                int index = runBinarySearch(allActors, currentCastMember);
 
                 if (index == -1) {
                     inList = false;
@@ -231,7 +321,7 @@ public class BaconCalculator {
                     int low = 0;
                     int high = kevinBaconCastmates.size() - 1;
 
-                    int index = runBinarySearch(kevinBaconCastmates, currentCastMember, low, high);
+                    int index = runBinarySearch(kevinBaconCastmates, currentCastMember);
 
                     if (index == -1 && !currentCastMember.equals("Kevin Bacon"))
                     {
@@ -246,7 +336,7 @@ public class BaconCalculator {
                         kevinBaconCastmates.add(currentCastMember);
                         sortStringResults(kevinBaconCastmates);
 
-                        int addMovieIndex = runBinarySearch(kevinBaconCastmates, currentCastMember, 0, kevinBaconCastmates.size());
+                        int addMovieIndex = runBinarySearch(kevinBaconCastmates, currentCastMember);
                         correspondingKevinBaconCastmates.add(addMovieIndex, currentMovie.getTitle());
                     }
                 }
@@ -412,8 +502,11 @@ public class BaconCalculator {
         Collections.sort(listToSort);
     }
 
-    private int runBinarySearch(ArrayList<String> sortedArray, String compare, int low, int high)
+    private int runBinarySearch(ArrayList<String> sortedArray, String compare)
     {
+        int low = 0;
+        int high = sortedArray.size() - 1;
+
         int index = -1;
 
         while (low <= high)
