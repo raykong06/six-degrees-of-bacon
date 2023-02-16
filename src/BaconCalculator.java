@@ -170,11 +170,11 @@ public class BaconCalculator {
                             j = moviesWithActor.size();
                             i = kevinBaconCastmates.size();
 
-                            connectedActors.add(currentActor);
-                            connectedMovies.add(currentMovie.getTitle());
+                            connectedMovies.add(currentMovie.getTitle()); // Input actor --> this movie -->
+                            connectedActors.add(currentActor);  // kevinBaconCastmate -->
 
                             int degreeTwoIndex = runBinarySearch(kevinBaconCastmates, currentActor);
-                            connectedMovies.add(correspondingKevinBaconCastmates.get(degreeTwoIndex));
+                            connectedMovies.add(correspondingKevinBaconCastmates.get(degreeTwoIndex)); // kevinBaconCastmateCorrespond --> Kevin Bacon
                         }
                         else
                         {
@@ -219,6 +219,7 @@ public class BaconCalculator {
                         foundActor = true;
 
                         String addActor = correspondingActorPrevDegree.get(i);
+                        /*
                         for (int k = 0; k < nextDegreeMovieList.size(); k++)
                         {
                             if (correspondingKevinBaconCastmates.contains(nextDegreeMovieList.get(k).getTitle()) && nextDegreeMovieList.get(k).getActors().contains(addActor))
@@ -229,14 +230,16 @@ public class BaconCalculator {
                             }
                         }
 
-                        connectedMovies.add(nextDegreeMovieList.get(i).getTitle());
-                        connectedActors.add(addActor);
+                         */
 
-                        connectedMovies.add(currentMovie.getTitle());
-                        connectedActors.add(currentActor);
+                        connectedMovies.add(currentMovie.getTitle()); // Input actor --> this movie -->
+                        connectedActors.add(currentActor); // degree 2 actor -->
 
-                        int degreeThreeIndex = runBinarySearch(nextDegreeActorList, currentActor);
-                        connectedMovies.add(nextDegreeMovieList.get(degreeThreeIndex).getTitle());
+                        connectedMovies.add(correspondingMovie.getTitle()); // degree 2 corresponding movie -->
+                        connectedActors.add(addActor); // degree 1 actor -->
+
+                        int degreeThreeIndex = runBinarySearch(kevinBaconCastmates, addActor);
+                        connectedMovies.add(correspondingKevinBaconCastmates.get(degreeThreeIndex)); // degree 1 movie --> Kevin Bacon
 
                         j = moviesWithActor.size();
                         i = nextDegreeActorList.size();
