@@ -201,6 +201,7 @@ public class BaconCalculator {
                 String currentActor = nextDegreeActorList.get(i);
                 SimpleMovie correspondingMovie = nextDegreeMovieList.get(i);
                 ArrayList<SimpleMovie> moviesWithActor = new ArrayList<SimpleMovie>();
+
                 for (int j = 0; j < moviesSortedLargeCast.size(); j++) {
                     SimpleMovie currentMovie = moviesSortedLargeCast.get(j);
                     ArrayList<String> currentMovieCast = moviesSortedLargeCast.get(j).getActors();
