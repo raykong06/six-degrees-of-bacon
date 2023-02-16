@@ -83,7 +83,7 @@ public class BaconCalculator {
 
                     if (degree < 0)
                     {
-                        System.out.println("The actor could not be found in under 3 degrees.");
+                        System.out.println("The actor could not be found in 3 degrees or less.");
                     }
                     else
                     {
@@ -220,18 +220,6 @@ public class BaconCalculator {
                         foundActor = true;
 
                         String addActor = correspondingActorPrevDegree.get(i);
-                        /*
-                        for (int k = 0; k < nextDegreeMovieList.size(); k++)
-                        {
-                            if (correspondingKevinBaconCastmates.contains(nextDegreeMovieList.get(k).getTitle()) && nextDegreeMovieList.get(k).getActors().contains(addActor))
-                            {
-                                String addMovie = correspondingKevinBaconCastmates.get(correspondingKevinBaconCastmates.indexOf(nextDegreeMovieList.get(k).getTitle()));
-                                connectedMovies.add(addMovie);
-                                k = nextDegreeMovieList.size();
-                            }
-                        }
-
-                         */
 
                         connectedMovies.add(currentMovie.getTitle()); // Input actor --> this movie -->
                         connectedActors.add(currentActor); // degree 2 actor -->
