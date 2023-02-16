@@ -269,9 +269,6 @@ public class BaconCalculator {
                 String currentCastMember = currentMovieCast.get(j);
                 boolean inList = false;
 
-                int low = 0;
-                int high = allActors.size() - 1;
-
                 int index = runBinarySearch(allActors, currentCastMember);
 
                 if (index == -1) {
