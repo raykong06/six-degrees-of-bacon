@@ -54,45 +54,6 @@ public class MovieDatabaseBuilder {
         return movies;
     }
 
-    public static ArrayList<ArrayList<SimpleMovie>> getSimpleMovieArrayDB(String fileName) {
-        ArrayList<ArrayList<SimpleMovie>> arrMovies = new ArrayList<ArrayList<SimpleMovie>>();
-        try {
-            File movieData = new File(fileName);
-            Scanner reader = new Scanner(movieData);
-            while (reader.hasNextLine()) {
-                String line = reader.nextLine();
-                if (line.indexOf("[Title:") == 0)
-                {
-                    ArrayList<SimpleMovie> movies = new ArrayList<SimpleMovie>();
-                    String closeBracket = "";
-                    while (!closeBracket.equals("]"))
-                    {
-                        String title = line.substring(line.indexOf("Title: ") + 7);
-                        String nextLine = reader.nextLine();
-                        //System.out.println(nextLine);
-                        String actors = nextLine.substring(nextLine.indexOf("Actors: [") + 9, nextLine.length() - 1);
-                        String[] data = {title, actors};
-                        if (data.length > 1) {
-                            SimpleMovie s = new SimpleMovie(data[0], data[1]);
-                            movies.add(s);
-                        }
-                        line = reader.nextLine();
-                        if (line.equals("]"))
-                        {
-                            closeBracket = line;
-                        }
-                    }
-                    arrMovies.add(movies);
-                }
-            }
-        }
-        catch (FileNotFoundException noFile) {
-            System.out.println("File not found!");
-            return null;
-        }
-        return arrMovies;
-    }
-
     public static ArrayList<String> getStringFile(String fileName) {
         ArrayList<String> movies = new ArrayList<String>();
         try {
