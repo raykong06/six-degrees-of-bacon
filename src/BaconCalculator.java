@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.Collections;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -8,17 +7,19 @@ public class BaconCalculator {
     private Scanner scanner = new Scanner(System.in);
     private ArrayList<SimpleMovie> movies = MovieDatabaseBuilder.getMovieDB("src/movie_data");
     private ArrayList<SimpleMovie> moviesSortedLargeCast = MovieDatabaseBuilder.getSimpleMovieDB("src/output.txt");
+    private ArrayList<String> secondDegreeActors = MovieDatabaseBuilder.getStringFile("src/second_degree_actors.txt");
+    private ArrayList<SimpleMovie> secondDegreeMovies = MovieDatabaseBuilder.getSimpleMovieDB("src/second_degree_movies.txt");
+    private ArrayList<SimpleMovie> thirdDegreeMovies = MovieDatabaseBuilder.getSimpleMovieDB("src/third_degree_movies.txt");
     private String inputActor;
     private int degree;
     private ArrayList<String> connectedActors;
     private ArrayList<String> connectedMovies;
     private ArrayList<String> allActors;
     private ArrayList<String> kevinBaconCastmates;
-    private ArrayList<String> correspondingKevinBaconCastmates;
+    private ArrayList<SimpleMovie> kevinBaconCastmatesMovies;
 
     public BaconCalculator()
     {
-        oneDegreeOfBacon();
         setAllActors();
     }
 
@@ -112,20 +113,54 @@ public class BaconCalculator {
                 "\nThank you for using the Bacon Calculator!");
     }
 
-    public void test()
+    public ArrayList<SimpleMovie> test()
     {
-        for (int i = 0; i < movies.size(); i++)
-        {
-            System.out.println(moviesSortedLargeCast.get(i).getActors().size());
+        oneDegreeOfBacon();
+        ArrayList<SimpleMovie> mov = new ArrayList<SimpleMovie>();
+        for (int i = 0; i < kevinBaconCastmates.size(); i++) {
+            String currentActor = kevinBaconCastmates.get(i);
+            ArrayList<SimpleMovie> moviesWithActor = new ArrayList<SimpleMovie>();
+            for (int j = 0; j < moviesSortedLargeCast.size(); j++) {
+                SimpleMovie currentMovie = moviesSortedLargeCast.get(j);
+                ArrayList<String> currentMovieCast = moviesSortedLargeCast.get(j).getActors();
+                if (currentMovieCast.contains(currentActor)) {
+                    moviesWithActor.add(currentMovie);
+                }
+            }
+            for (int j = 0; j < moviesWithActor.size(); j++)
+            {
+                boolean inList = false;
+                String currentMovieTitle = moviesWithActor.get(j).getTitle();
+                for (int k = 0; k < mov.size(); k++)
+                {
+                    String compareMovieTitle = mov.get(k).getTitle();
+                    if (compareMovieTitle.equals(currentMovieTitle))
+                    {
+                        inList = true;
+                        k = mov.size();
+                    }
+                }
+                if (!inList)
+                {
+                    mov.add(moviesWithActor.get(j));
+                }
+            }
         }
+
+        return mov;
     }
 
-    private void calculateBacon()
+    public void setInputActor(String inputActor)
     {
+        this.inputActor = inputActor;
+    }
+    public void calculateBacon()
+    {
+        oneDegreeOfBacon();
         connectedMovies = new ArrayList<String>();
         connectedActors = new ArrayList<String>();
-        ArrayList<String> nextDegreeActorList = new ArrayList<String>();
-        ArrayList<SimpleMovie> nextDegreeMovieList = new ArrayList<SimpleMovie>();
+        ArrayList<String> nextDegreeActorListx = new ArrayList<String>(); // degree 2 actors
+        ArrayList<SimpleMovie> nextDegreeMovieListx = new ArrayList<SimpleMovie>(); // degree 2 movies
         ArrayList<String> correspondingActorPrevDegree = new ArrayList<String>();
         boolean foundActor = false;
 
@@ -140,12 +175,52 @@ public class BaconCalculator {
             if (actorIndex > -1)
             {
                 degree = 1;
-                connectedMovies.add(correspondingKevinBaconCastmates.get(actorIndex));
+                connectedMovies.add(kevinBaconCastmatesMovies.get(actorIndex).getTitle());
                 foundActor = true;
             }
         }
         if (!foundActor) // degree 2
         {
+            for (int i = 0; i < secondDegreeMovies.size(); i++)
+            {
+                SimpleMovie currentMovie = secondDegreeMovies.get(i);
+                ArrayList<String> currentMovieCast = currentMovie.getActors();
+                if (currentMovieCast.contains(inputActor))
+                {
+                    for (int j = 0; j < currentMovieCast.size(); j++)
+                    {
+                        String currentActor = currentMovieCast.get(j);
+                        if (kevinBaconCastmates.contains(currentActor))
+                        {
+                            degree = 2;
+                            foundActor = true;
+
+                            String degreeOneActor = currentActor;
+                            String degreeOneMovie = "";
+
+                            for (int k = 0; k < kevinBaconCastmatesMovies.size(); k++)
+                            {
+                                ArrayList<String> cast = kevinBaconCastmatesMovies.get(k).getActors();
+                                if (cast.contains(degreeOneActor))
+                                {
+                                    degreeOneMovie = kevinBaconCastmatesMovies.get(k).getTitle();
+                                    k = kevinBaconCastmatesMovies.size();
+                                }
+                            }
+
+                            connectedMovies.add(currentMovie.getTitle()); // Input actor --> this movie -->
+                            connectedActors.add(degreeOneActor); // degree 1 actor -->
+
+                            connectedMovies.add(degreeOneMovie); // degree 1 movie --> Kevin Bacon
+
+                            i = secondDegreeMovies.size();
+                            j = currentMovieCast.size();
+                        }
+                    }
+                }
+            }
+
+            /*
             for (int i = 0; i < kevinBaconCastmates.size(); i++) {
                 String currentActor = kevinBaconCastmates.get(i);
                 ArrayList<SimpleMovie> moviesWithActor = new ArrayList<SimpleMovie>();
@@ -176,6 +251,7 @@ public class BaconCalculator {
                             int degreeTwoIndex = runBinarySearch(kevinBaconCastmates, currentActor);
                             connectedMovies.add(correspondingKevinBaconCastmates.get(degreeTwoIndex)); // kevinBaconCastmateCorrespond --> Kevin Bacon
                         }
+
                         else
                         {
                             int checkIndex = runBinarySearch(nextDegreeActorList, currentMovieCurrentActor);
@@ -188,16 +264,110 @@ public class BaconCalculator {
                                 correspondingActorPrevDegree.add(sortIndex, currentActor);
                             }
                         }
+
+
                     }
                 }
             }
+
+             */
         }
 
 
         if (!foundActor) // degree 3
         {
+            // check arraylist of third degree movies to see which specific movie both were cast in
+            for (int i = 0; i < thirdDegreeMovies.size(); i++) {
+                SimpleMovie currentMovie = thirdDegreeMovies.get(i);
+                ArrayList<String> currentMovieCast = currentMovie.getActors();
+                if (currentMovieCast.contains(inputActor))
+                {
+                    for (int j = 0; j < currentMovieCast.size(); j++)
+                    {
+                        String currentActor = currentMovieCast.get(j);
+                        if (secondDegreeActors.contains(currentActor)) //&& !currentActor.equals(inputActor))
+                        {
+                            degree = 3;
+                            foundActor = true;
+
+                            //int index = secondDegreeActors.indexOf(currentActor);
+                            String degreeTwoActor = currentActor; //secondDegreeActors.get(index);
+                            String degreeTwoMovie = "";
+
+                            String degreeOneActor = "";
+                            for (int k = 0; k < secondDegreeMovies.size(); k++)
+                            {
+                                ArrayList<String> cast = secondDegreeMovies.get(k).getActors();
+                                boolean hasDegreeTwoActor = false;
+                                if (cast.contains(degreeTwoActor))
+                                {
+                                    hasDegreeTwoActor = true;
+                                }
+                                boolean hasDegreeOneActor = false;
+                                for (int l = 0; l < kevinBaconCastmates.size(); l++)
+                                {
+                                    degreeOneActor = kevinBaconCastmates.get(l);
+                                    if (cast.contains(kevinBaconCastmates.get(l)))
+                                    {
+                                        hasDegreeOneActor = true;
+                                        l = kevinBaconCastmates.size();
+                                    }
+                                }
+                                if (hasDegreeOneActor && hasDegreeTwoActor)
+                                {
+                                    degreeTwoMovie = secondDegreeMovies.get(k).getTitle();
+                                    k = secondDegreeMovies.size();
+                                }
+                            }
+
+                            connectedMovies.add(currentMovie.getTitle()); // Input actor --> this movie -->
+                            connectedActors.add(degreeTwoActor); // degree 2 actor -->
+
+                            connectedMovies.add(degreeTwoMovie); // degree 2 corresponding movie -->
+                            connectedActors.add(degreeOneActor); // degree 1 actor -->
+
+                            int degreeOneIndex = runBinarySearch(kevinBaconCastmates, degreeOneActor);
+                            connectedMovies.add(kevinBaconCastmatesMovies.get(degreeOneIndex).getTitle()); // degree 1 movie --> Kevin Bacon
+
+                            i = thirdDegreeMovies.size();
+                            j = currentMovieCast.size();
+                        }
+                    }
+                }
+            }
+            /*
+            // create an array with all movies that input actor was in
+            ArrayList<SimpleMovie> moviesWithInputActor = new ArrayList<SimpleMovie>();
+            for (int i = 0; i < moviesSortedLargeCast.size(); i++)
+            {
+                SimpleMovie currentMovie = moviesSortedLargeCast.get(i);
+                ArrayList<String> currentMovieCast = moviesSortedLargeCast.get(i).getActors();
+                if (currentMovieCast.contains(inputActor)) {
+                    moviesWithInputActor.add(currentMovie);
+                }
+            }
+            // compare all movies input actor was in and compare to third degree movies
+            for (int i = 0; i < moviesWithInputActor.size(); i++)
+            {
+                String currentMovieTitle = moviesWithInputActor.get(i).getTitle();
+                for (int j = 0; j < thirdDegreeMovieTitles.size(); j++)
+                {
+                    String compareMovieTitle = thirdDegreeMovieTitles.get(j);
+                    if (compareMovieTitle.equals(currentMovieTitle))
+                    {
+                        // if same movie was found, continue the method
+                        continueSearch = true;
+                        i = moviesWithInputActor.size();
+                        j = thirdDegreeMovieTitles.size();
+                    }
+                }
+            }
+
+             */
+            /*
             for (int i = 0; i < nextDegreeActorList.size(); i++)
             {
+                System.out.println(i + "/" + nextDegreeActorList.size());
                 String currentActor = nextDegreeActorList.get(i);
                 SimpleMovie correspondingMovie = nextDegreeMovieList.get(i);
                 ArrayList<SimpleMovie> moviesWithActor = new ArrayList<SimpleMovie>();
@@ -211,6 +381,8 @@ public class BaconCalculator {
                 }
 
 
+
+                /*
                 for (int j = 0; j < moviesWithActor.size(); j++) {
                     SimpleMovie currentMovie = moviesWithActor.get(j);
                     ArrayList<String> currentMovieCast = currentMovie.getActors();
@@ -235,7 +407,7 @@ public class BaconCalculator {
                     }
                     else
                     {
-                        /*
+
                         int checkIndex = runBinarySearch(nextDegreeActorList, currentActor);
                         if (checkIndex < 0)
                         {
@@ -245,10 +417,58 @@ public class BaconCalculator {
                             nextDegreeMovieList.add(sortIndex, currentMovie);
                         }
 
-                         */
+
+                    }
+                }
+
+                 */
+/*
+            boolean continueSearch = false;
+            for (int i = 0; i < moviesSortedLargeCast.size(); i++)
+            {
+                SimpleMovie currentMovie = moviesSortedLargeCast.get(i);
+                ArrayList<String> currentMovieCast = moviesSortedLargeCast.get(i).getActors();
+                if (currentMovieCast.contains(inputActor))
+                {
+                    if (allMoviesCheck.contains(currentMovie)) {
+                        continueSearch = true;
+                        i = moviesSortedLargeCast.size();
                     }
                 }
             }
+
+            if (continueSearch)
+            {
+                for (int i = 0; i < allMoviesWithActors.size(); i++) {
+                    ArrayList<SimpleMovie> currentMovieWithActor = allMoviesWithActors.get(i);
+                    for (int j = 0; j < currentMovieWithActor.size(); j++)
+                    {
+                        SimpleMovie currentMovie = currentMovieWithActor.get(j);
+                        ArrayList<String> currentMovieCast = currentMovie.getActors();
+                        // found actor
+                        if (currentMovieCast.contains(inputActor)) {
+                            degree = 3;
+                            foundActor = true;
+
+                            String addActor = correspondingActorPrevDegree.get(i);
+
+                            connectedMovies.add(currentMovie.getTitle()); // Input actor --> this movie -->
+                            connectedActors.add(nextDegreeActorList.get(i)); // degree 2 actor -->
+
+                            connectedMovies.add(nextDegreeMovieList.get(i).getTitle()); // degree 2 corresponding movie -->
+                            connectedActors.add(addActor); // degree 1 actor -->
+
+                            int degreeThreeIndex = runBinarySearch(kevinBaconCastmates, addActor);
+                            connectedMovies.add(correspondingKevinBaconCastmates.get(degreeThreeIndex)); // degree 1 movie --> Kevin Bacon
+
+                            j = currentMovieWithActor.size();
+                            i = allMoviesWithActors.size();
+                        }
+                    }
+                }
+            }
+
+ */
         }
 
         if (!foundActor)
@@ -269,16 +489,8 @@ public class BaconCalculator {
                 String currentCastMember = currentMovieCast.get(j);
                 boolean inList = false;
 
-                int index = runBinarySearch(allActors, currentCastMember);
+                allActors.add(currentCastMember);
 
-                if (index == -1) {
-                    inList = false;
-                } else {
-                    inList = true;
-                }
-                if (!inList) {
-                    allActors.add(currentCastMember);
-                }
             }
         }
     }
@@ -286,7 +498,7 @@ public class BaconCalculator {
     private void oneDegreeOfBacon()
     {
         kevinBaconCastmates = new ArrayList<String>();
-        correspondingKevinBaconCastmates = new ArrayList<String>();
+        kevinBaconCastmatesMovies = new ArrayList<SimpleMovie>();
         for (int i = 0; i < movies.size(); i++)
         {
             SimpleMovie currentMovie = movies.get(i);
@@ -307,9 +519,6 @@ public class BaconCalculator {
                     String currentCastMember = currentMovieCast.get(j);
                     boolean inList = false;
 
-                    int low = 0;
-                    int high = kevinBaconCastmates.size() - 1;
-
                     int index = runBinarySearch(kevinBaconCastmates, currentCastMember);
 
                     if (index == -1 && !currentCastMember.equals("Kevin Bacon"))
@@ -326,7 +535,7 @@ public class BaconCalculator {
                         sortStringResults(kevinBaconCastmates);
 
                         int addMovieIndex = runBinarySearch(kevinBaconCastmates, currentCastMember);
-                        correspondingKevinBaconCastmates.add(addMovieIndex, currentMovie.getTitle());
+                        kevinBaconCastmatesMovies.add(addMovieIndex, currentMovie);
                     }
                 }
             }
